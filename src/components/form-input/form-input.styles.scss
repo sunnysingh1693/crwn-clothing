@@ -33,7 +33,7 @@ $main-color: black;
     }
   }
 
-  input[type='password'] {
+  input[type="password"] {
     letter-spacing: 0.3em;
   }
 
@@ -49,6 +49,10 @@ $main-color: black;
 
     &.shrink {
       @include shrinkLabel();
+    }
+
+    &::first-letter {
+      text-transform: capitalize;
     }
   }
 }
