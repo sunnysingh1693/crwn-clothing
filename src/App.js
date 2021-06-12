@@ -6,19 +6,14 @@ import HomePage from "./pages/homepage/homepage.component";
 import ShopPage from "./pages/shop/shop.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
+import { connect } from "react-redux";
+import { setCurrentUser } from "./redux/user/user.action";
 
 class App extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {
-      currentUser: null,
-    };
-  }
-
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+    const {setCurrentUser} = this.props;
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       // If the user has actually signed-in
       if (userAuth) { 
@@ -26,10 +21,10 @@ class App extends React.Component {
         const userRef = createUserProfileDocument(userAuth);
 
         // We're going to subscribe/listen to userRef for any changes to the data
-        // But we also get back the 1st start of the data
+        // But we also get back the 1st state of the data
         // Setting the users data from DB to state
         (await userRef).onSnapshot((snapShot) => {
-          this.setState({
+          setCurrentUser({
             currentUser: {
               id: snapShot.id,
               ...snapShot.data(),
@@ -39,7 +34,7 @@ class App extends React.Component {
         console.log(userRef)
       } else {
         // when user logs out set state to null
-        this.setState({currentUser: userAuth})
+        setCurrentUser(userAuth)
       }
     });
   }
@@ -51,7 +46,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
@@ -62,4 +57,10 @@ class App extends React.Component {
   }
 }
 
-export default App;
+// The App doesn't use the currentUser anywhere inside it. So, we don't need "mapStateToProps()" that's why the 1st arg to "connect()" is null. The 2nd arg to "connect()" is "mapDispatchToProps()", which gets the dispatch property and returns an action object object that we needs to dispatch, ITC it's the "setCurrentUsr" from "user.action"
+
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+})
+
+export default connect(null, mapDispatchToProps)(App);
