@@ -5,8 +5,10 @@ import "./header.styles.scss";
 import { ReactComponent as Logo } from "../../assets/crown.svg";
 import { auth } from "../../firebase/firebase.utils";
 import { connect } from "react-redux";
+import CartIcon from "../cart-icon/cart-icon.component";
+import CartDropdown from "../card-dropdown/card-dropdown.component";
 
-const Header = ({ currentUser }) => (
+const Header = ({ currentUser, hidden }) => (
   <div className="header">
     {console.log(currentUser)}
     <Link to="/" className="logo-container">
@@ -33,15 +35,18 @@ const Header = ({ currentUser }) => (
           SIGN IN
         </Link>
       )}
+      <CartIcon />
     </div>
+    {!hidden && <CartDropdown />}
   </div>
 );
 
 // connect is a higher order funcction that lets us modify our components to have access to things related to redux. It takes two functions as arguments, 2nd one is optional. It return another HOF, to which we pass our "Header" component. The 1st arg of connect is a function that allows us to access the state (root-reducer)
 
 // The function name can be anything but "mapStateToProps" is the conventional name as per the Redux docs. The "state" in this function is the root-reducer
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser
+const mapStateToProps = ({user: {currentUser}, cart: {hidden}}) => ({
+  currentUser,
+  hidden
 })
 
 export default connect(mapStateToProps)(Header);
