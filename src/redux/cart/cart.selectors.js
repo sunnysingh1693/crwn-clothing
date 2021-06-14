@@ -7,10 +7,23 @@ export const selectCartItems = createSelector(
   (cart) => cart.cartItems // function that will return the value we want outta selector. Takes args as o/p of the selectors from the array of selectors in the same order.
 );
 
+export const selectCartHidden = createSelector(
+  [selectCart],
+  cart => cart.hidden
+)
+
 export const selectCartItemsCount = createSelector(
   [selectCartItems],
   cartItems => cartItems.reduce(
     (accumulatedQuantity, cartItem) => accumulatedQuantity + cartItem.quantity,
+    0
+  ),
+)
+
+export const selectCartTotal = createSelector(
+  [selectCartItems],
+  cartItems => cartItems.reduce(
+    (accumulatedQuantity, cartItem) => accumulatedQuantity + cartItem.quantity * cartItem.price,
     0
   ),
 )

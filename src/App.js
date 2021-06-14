@@ -8,6 +8,9 @@ import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 import { connect } from "react-redux";
 import { setCurrentUser } from "./redux/user/user.action";
+import { selectCurrentUser } from "./redux/user/user.selectors";
+import { createStructuredSelector } from 'reselect'
+import CheckoutPage from "./components/checkout/checkout.component";
 
 class App extends React.Component {
   unsubscribeFromAuth = null;
@@ -55,6 +58,7 @@ class App extends React.Component {
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
+          <Route exact path="/checkout" component={CheckoutPage} />
           <Route
             exact
             path="/signin"
@@ -74,8 +78,8 @@ class App extends React.Component {
 
 // If the App doesn't use the currentUser anywhere inside it. So, we don't need "mapStateToProps()" then the 1st arg to "connect()" will be null. The 2nd arg to "connect()" is "mapDispatchToProps()", which gets the dispatch property and returns an action object that we needs to dispatch, ITC it's the "setCurrentUsr" from "user.action"
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser,
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser
 });
 
 const mapDispatchToProps = (dispatch) => ({
