@@ -3,7 +3,11 @@ import {persistStore} from 'redux-persist';
 import logger from "redux-logger";
 import rootReducer from "./root-reducer";
 
-const middlewares = [logger]; // we can add more middlewares in the array
+const middlewares = []; // we can add more middlewares in the array
+
+if (process.env.NODE_ENV === 'development') {
+  middlewares.push(logger);
+}
 
 // spreading the "middlewares" passes each array items as individual args to the applyMiddleware()
 export const store = createStore(rootReducer, applyMiddleware(...middlewares));
