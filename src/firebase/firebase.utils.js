@@ -4,7 +4,7 @@ import "firebase/auth";
 
 const config = {
   apiKey: "AIzaSyBaFfJ5vnf77i68YvkEmBvHbIlO5nCYOtw",
-  authDomain: "crwn-db-e1e90.firebaseapp.com",
+  authDomain: "sunny-crwn-live.herokuapp.com",
   projectId: "crwn-db-e1e90",
   storageBucket: "crwn-db-e1e90.appspot.com",
   messagingSenderId: "502176019687",
