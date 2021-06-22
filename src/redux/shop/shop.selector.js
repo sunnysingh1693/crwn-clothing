@@ -11,12 +11,12 @@ export const selectCollections = createSelector(
 export const selectCollectionsForPreview = createSelector(
   [selectCollections],
   // "Object.keys" converts all the keys of an onject in an array. We're then mapping over those keys, getting the value, the key corresponds to in the "collections" object.
-  collections => Object.keys(collections).map(key => collections[key])
+  collections => collections ? Object.keys(collections).map(key => collections[key]) : []
 )
 
 export const selectCollection = memoize((collectionUrlParam) =>
   createSelector(
     [selectCollections],
-    collections => collections[collectionUrlParam]
+    collections => collections ? collections[collectionUrlParam] : null
   )
 );

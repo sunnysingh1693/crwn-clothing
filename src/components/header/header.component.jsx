@@ -1,6 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import "./header.styles.scss";
+import { HeaderContainer, LogoContainer, OptionsContainer, OptionDiv, OptionLink } from './header.styles'
 // The ReactComponent import name is special and tells Create React App that you want a React component that renders an SVG.
 import { ReactComponent as Logo } from "../../assets/crown.svg";
 import { auth } from "../../firebase/firebase.utils";
@@ -12,36 +11,32 @@ import { selectCartHidden } from "../../redux/cart/cart.selectors";
 import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 const Header = ({ currentUser, hidden }) => (
-  <div className="header">
+  <HeaderContainer>
     {console.log(currentUser)}
-    <Link to="/" className="logo-container">
+    <LogoContainer to="/">
       <Logo className="logo"></Logo>
-    </Link>
-    <div className="options">
+    </LogoContainer>
+    <OptionsContainer>
       {currentUser && (
-        <div className="option">
+        <OptionDiv>
           HEY, {currentUser.currentUser.displayName.toUpperCase()}
-        </div>
+        </OptionDiv>
       )}
-      <Link className="option" to="/shop">
-        SHOP
-      </Link>
-      <Link className="option" to="/">
-        CONTACT
-      </Link>
+      <OptionLink to="/shop">SHOP</OptionLink>
+      <OptionLink to="/">CONTACT</OptionLink>
       {currentUser ? (
-        <div className="option" onClick={() => auth.signOut()}>
+        /* We can use the "as" attribute to specify the type of element we want the styled-component to be. Instead of a 'div', we can also pass a component, as={ComponentName}. 
+        This also eliminates our need to have two styled-components, "OptionLink" & "OptionDiv" sharing a css block. Instead now we can have only one styled-component "OptionLink" and use it as='div'. */
+        <OptionLink as="div" onClick={() => auth.signOut()}>
           SIGN OUT
-        </div>
+        </OptionLink>
       ) : (
-        <Link className="option" to="/signin">
-          SIGN IN
-        </Link>
+        <OptionLink to="/signin">SIGN IN</OptionLink>
       )}
       <CartIcon />
-    </div>
+    </OptionsContainer>
     {!hidden && <CartDropdown />}
-  </div>
+  </HeaderContainer>
 );
 
 // connect is a higher order funcction that lets us modify our components to have access to things related to redux. It takes two functions as arguments, 2nd one is optional. It return another HOF, to which we pass our "Header" component. The 1st arg of connect is a function that allows us to access the state (root-reducer)
