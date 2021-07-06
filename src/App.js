@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Switch, Redirect } from "react-router";
 import "./App.css";
 import Header from "./components/header/header.component";
@@ -12,12 +12,11 @@ import { selectCurrentUser } from "./redux/user/user.selectors";
 import { createStructuredSelector } from 'reselect'
 import CheckoutPage from "./components/checkout/checkout.component";
 
-class App extends React.Component {
-  unsubscribeFromAuth = null;
+const App = ({ setCurrentUser, currentUser }) => {
 
-  componentDidMount() {
-    const { setCurrentUser } = this.props;
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+  useEffect(() => {
+    let unsubscribeFromAuth = null;
+    unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       // If the user has actually signed-in
       if (userAuth) {
         // We get the snapshotObject from the referenceObject using the .get() method.
@@ -45,35 +44,31 @@ class App extends React.Component {
         setCurrentUser(userAuth);
       }
     });
-  }
 
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-  }
+    return () => { unsubscribeFromAuth(); } // This mimics "componentWillUnmount()"
+  }, [setCurrentUser]);
 
-  render() {
-    return (
-      <div className="App">
-        <Header />
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route path="/shop" component={ShopPage} />
-          <Route exact path="/checkout" component={CheckoutPage} />
-          <Route
-            exact
-            path="/signin"
-            render={() =>
-              this.props.currentUser ? (
-                <Redirect to="/" />
-              ) : (
-                <SignInAndSignUpPage />
-              )
-            }
-          />
-        </Switch>
-      </div>
-    );
-  }
+  return (
+    <div className="App">
+      <Header />
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+        <Route path="/shop" component={ShopPage} />
+        <Route exact path="/checkout" component={CheckoutPage} />
+        <Route
+          exact
+          path="/signin"
+          render={() =>
+            currentUser ? (
+              <Redirect to="/" />
+            ) : (
+              <SignInAndSignUpPage />
+            )
+          }
+        />
+      </Switch>
+    </div>
+  );
 }
 
 // If the App doesn't use the currentUser anywhere inside it. So, we don't need "mapStateToProps()" then the 1st arg to "connect()" will be null. The 2nd arg to "connect()" is "mapDispatchToProps()", which gets the dispatch property and returns an action object that we needs to dispatch, ITC it's the "setCurrentUsr" from "user.action"
